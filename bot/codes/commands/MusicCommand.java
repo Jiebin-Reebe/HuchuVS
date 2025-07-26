@@ -18,8 +18,6 @@ public class MusicCommand extends ListenerAdapter {
             // play
             case "!재생":
             case "!ㅍ":
-            case "!play":
-            case "!p":
                 if (parts.length < 2) {
                     event.getChannel().sendMessage("노래제목을 넣으라냥 🎵").queue();
                 } else {
@@ -30,32 +28,24 @@ public class MusicCommand extends ListenerAdapter {
             // 일시정지
             case "!일시정지":
             case "!ㅇ":
-            case "!pause":
-            case "!i":
                 togglePause(event);
                 break;
 
             // clear
             case "!삭제":
             case "!ㅊ":
-            case "!clear":
-            case "!c":
                 clearQueue(event);
                 break;
 
             // queue
             case "!재생목록":
             case "!ㅋ":
-            case "!queue":
-            case "!q":
                 showQueue(event);
                 break;
 
             // leave
             case "!나가":
             case "!ㄴ":
-            case "!leave":
-            case "!l":
                 clearQueue(event);
                 leaveChannel(event);
                 break;
@@ -63,8 +53,6 @@ public class MusicCommand extends ListenerAdapter {
             // remove
             case "!제거":
             case "!ㄹ":
-            case "!remove":
-            case "!r":
                 if (parts.length < 2) {
                     event.getChannel().sendMessage("제거할 곡 번호를 입력하라냥! 🗑️").queue();
                 } else {
@@ -75,16 +63,12 @@ public class MusicCommand extends ListenerAdapter {
             // skip
             case "!스킵":
             case "!ㅅ":
-            case "!skip":
-            case "!s":
                 skipMusic(event);
                 break;
 
             // repeat
             case "!반복":
             case "!ㅂ":
-            case "!repeat":
-            case "!b":
                 toggleRepeat(event);
                 break;
         }

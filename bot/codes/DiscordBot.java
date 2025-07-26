@@ -35,7 +35,7 @@ public class DiscordBot {
                 .enableIntents(intents)
                 // 상메
                 .setActivity(Activity.customStatus("츄르 먹는중..."))
-                // 이벤트 리스너
+                // 이벤트 리스너 ()
                 .addEventListeners(
                         xpSystem,
 

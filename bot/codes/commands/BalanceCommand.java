@@ -29,32 +29,30 @@ public class BalanceCommand extends ListenerAdapter {
 
         switch (command.toLowerCase()) {
             case "!내전추가":
-            case "!njadd":
+            case "!내전ㅊㄱ":
                 handleRegisterCommand(event, args);
                 break;
 
             case "!밸런스":
-            case "!balance":
                 handleBalanceCommand(event);
                 break;
 
             case "!내전삭제":
-            case "!njremove":
+            case "!내전ㅅㅈ":
                 handleRemoveCommand(event, args);
                 break;
 
             case "!라인부족":
-            case "!lacklane":
+            case "!ㄹㅇㅂㅈ":
                 handleRoleCheckCommand(event);
                 break;
 
             case "!초기화":
-            case "!njreset":
+            case "!ㅊㄱㅎ":
                 handleClearCommand(event);
                 break;
 
-            case "!등록리스트":
-            case "!njlist":
+            case "!리스트":
                 handleListCommand(event);
                 break;
         }
@@ -62,7 +60,7 @@ public class BalanceCommand extends ListenerAdapter {
 
     private void handleRegisterCommand(MessageReceivedEvent event, String[] args) {
         if (args.length < 4) {
-            event.getChannel().sendMessage("❌ 사용법: `!내전가입 [이름] [라인] [점수]`").queue();
+            event.getChannel().sendMessage("❌ 사용법: `!내전추가 / !내전ㅊㄱ[이름] [라인] [점수]`").queue();
             return;
         }
 
@@ -73,7 +71,7 @@ public class BalanceCommand extends ListenerAdapter {
         try {
             score = Double.parseDouble(args[3]);
         } catch (NumberFormatException e) {
-            event.getChannel().sendMessage("❌ 점수는 숫자로 입력해 주세요. 예: `!내전가입 Alice Mid 14.5`").queue();
+            event.getChannel().sendMessage("❌ 점수는 숫자로 입력해 주세요. 예: `!내전추가 / !내전ㅊㄱ Alice Mid 14.5`").queue();
             return;
         }
 
@@ -176,7 +174,7 @@ public class BalanceCommand extends ListenerAdapter {
 
     private void handleRemoveCommand(MessageReceivedEvent event, String[] args) {
         if (args.length < 2) {
-            event.getChannel().sendMessage("❌ 사용법: `!삭제 [이름]`").queue();
+            event.getChannel().sendMessage("❌ 사용법: `!내전삭제 / !내전ㅅㅈ [이름]`").queue();
             return;
         }
 
