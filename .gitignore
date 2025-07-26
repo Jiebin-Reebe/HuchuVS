@@ -1,1 +1,3 @@
-bot/resourcess/DiscordBotToken.properties
+bot/resources/DiscordBotToken.properties
+bot/resources/RoleId.properties
+bot/build/
