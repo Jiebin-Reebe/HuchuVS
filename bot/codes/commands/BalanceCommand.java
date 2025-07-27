@@ -2,6 +2,7 @@ package commands;
 
 import user.User;
 import user.UserQueue;
+import tools.BalanceMaker;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -22,6 +23,7 @@ public class BalanceCommand extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         String content = event.getMessage().getContentRaw();
+        BalanceMaker balancer = new BalanceMaker();
         if (!content.startsWith("!")) return;
 
         String[] args = content.split(" ");
@@ -58,7 +60,7 @@ public class BalanceCommand extends ListenerAdapter {
         }
     }
 
-    private void handleRegisterCommand(MessageReceivedEvent event, String[] args) {
+    /*private void handleRegisterCommand(MessageReceivedEvent event, String[] args) {
         if (args.length < 4) {
             event.getChannel().sendMessage("❌ 사용법: `!내전추가 / !내전ㅊㄱ[이름] [라인] [점수]`").queue();
             return;
@@ -249,5 +251,5 @@ public class BalanceCommand extends ListenerAdapter {
             case "서폿": case "서포터": return "support";
             default: return input.toLowerCase();
         }
-    }
+    }*/
 }
