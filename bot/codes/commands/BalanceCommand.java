@@ -15,6 +15,7 @@ import java.util.List;
 
 public class BalanceCommand extends ListenerAdapter {
     private final UserQueue queue;
+    private final BalanceMaker balancer = new BalanceMaker();
 
     public BalanceCommand(UserQueue queue) {
         this.queue = queue;
@@ -23,7 +24,6 @@ public class BalanceCommand extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         String content = event.getMessage().getContentRaw();
-        BalanceMaker balancer = new BalanceMaker();
         if (!content.startsWith("!")) return;
 
         String[] args = content.split(" ");
@@ -60,7 +60,7 @@ public class BalanceCommand extends ListenerAdapter {
         }
     }
 
-    /*private void handleRegisterCommand(MessageReceivedEvent event, String[] args) {
+    private void handleRegisterCommand(MessageReceivedEvent event, String[] args) {
         if (args.length < 4) {
             event.getChannel().sendMessage("❌ 사용법: `!내전추가 / !내전ㅊㄱ[이름] [라인] [점수]`").queue();
             return;
@@ -92,86 +92,9 @@ public class BalanceCommand extends ListenerAdapter {
     }
 
     private void handleBalanceCommand(MessageReceivedEvent event) {
-        List<User> Users = queue.getAll();
-        if (Users.size() != 10) {
-            event.getChannel().sendMessage("⚠️ 정확히 10명이 등록되어야 합니다. 현재: " + Users.size() + "명").queue();
-            return;
-        }
-
-        List<List<User>> combinations = generateCombinations(Users, 5);
-        double minDiff = Double.MAX_VALUE;
-        List<User> bestTeamA = null;
-        List<User> bestTeamB = null;
-
-        for (List<User> teamA : combinations) {
-            if (!isValidTeam(teamA)) continue;
-
-            List<User> teamB = new ArrayList<>(Users);
-            teamB.removeAll(teamA);
-            if (!isValidTeam(teamB)) continue;
-
-            double scoreA = getTeamScore(teamA);
-            double scoreB = getTeamScore(teamB);
-            double diff = Math.abs(scoreA - scoreB);
-
-            if (diff < minDiff) {
-                minDiff = diff;
-                bestTeamA = new ArrayList<>(teamA);
-                bestTeamB = new ArrayList<>(teamB);
-            }
-        }
-
-        if (bestTeamA == null || bestTeamB == null) {
-            event.getChannel().sendMessage("❌ 라인 중복 없이 팀을 구성할 수 없습니다. 각 라인당 2명씩 등록되어야 합니다.").queue();
-            return;
-        }
-
-        StringBuilder result = new StringBuilder("🎯 **밸런스 결과** (점수 차이: " + String.format("%.2f", minDiff) + ")\n\n");
-
-        result.append("🟥 **Team A**\n");
-        for (User p : bestTeamA) {
-            result.append(p.name).append(" (").append(p.role).append(", ").append(p.score).append("점)\n");
-        }
-
-        result.append("\n🟦 **Team B**\n");
-        for (User p : bestTeamB) {
-            result.append(p.name).append(" (").append(p.role).append(", ").append(p.score).append("점)\n");
-        }
-
-        event.getChannel().sendMessage(result.toString()).queue();
+        String result = balancer.balance(queue.getAll());
+        event.getChannel().sendMessage(result).queue();
         queue.clear();
-    }
-
-    private boolean isValidTeam(List<User> team) {
-        Set<String> roles = new HashSet<>();
-        for (User u : team) {
-            String role = u.role.toLowerCase();
-            if (roles.contains(role)) return false;
-            roles.add(role);
-        }
-        return roles.size() == 5;
-    }
-
-    private double getTeamScore(List<User> team) {
-        return team.stream().mapToDouble(p -> p.score).sum();
-    }
-
-    private List<List<User>> generateCombinations(List<User> Users, int k) {
-        List<List<User>> result = new ArrayList<>();
-        generateHelper(Users, new ArrayList<>(), 0, k, result);
-        return result;
-    }
-
-    private void generateHelper(List<User> players, List<User> current, int index, int k, List<List<User>> result) {
-        if (current.size() == k) {
-            result.add(new ArrayList<>(current));
-            return;
-        }
-        for (int i = index; i < players.size(); i++) {
-            current.add(players.get(i));
-            generateHelper(players, current, i + 1, k, result);
-            current.remove(current.size() - 1);
-        }
     }
 
     private void handleRemoveCommand(MessageReceivedEvent event, String[] args) {
@@ -244,12 +167,30 @@ public class BalanceCommand extends ListenerAdapter {
 
     private String translateRole(String input) {
         switch (input.toLowerCase()) {
-            case "탑": return "top";
-            case "정글": return "jungle";
-            case "미드": return "mid";
-            case "원딜": case "바텀": return "bot";
-            case "서폿": case "서포터": return "support";
+            case "탑": 
+            case "ㅌ":
+                return "top";
+
+            case "정글":
+            case "ㅈㄱ":
+                return "jungle";
+
+            case "미드":
+            case "ㅁㄷ":
+                return "mid";
+
+            case "원딜": 
+            case "바텀": 
+            case "ㅇㄷ":
+            case "ㅂㅌ":
+                return "bot";
+
+            case "서폿": 
+            case "서포터": 
+            case "ㅅㅍ":
+                return "support";
+
             default: return input.toLowerCase();
         }
-    }*/
+    }
 }
