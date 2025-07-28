@@ -1,33 +1,38 @@
 package tools;
 
 import user.User;
+
 import java.util.*;
 
 public class BalanceMaker {
-
-    public String balance(List<User> Users) {
-        if (Users.size() != 10) {
-            return "⚠️ 정확히 10명이 등록되어야 합니다. 현재: " + Users.size() + "명";
+    public String balance(List<User> users) {
+        if (users.size() != 10) {
+            return "⚠️ 정확히 10명이 등록되어야 합니다. 현재: " + users.size() + "명";
         }
 
-        List<List<User>> combinations = generateCombinations(Users, 5);
-        double minDiff = Double.MAX_VALUE;
+        List<List<User>> combinations = generateCombinations(users, 5);
+        double minPenalty = Double.MAX_VALUE;
         List<User> bestTeamA = null;
         List<User> bestTeamB = null;
 
         for (List<User> teamA : combinations) {
-            if (!isValidTeam(teamA)) continue;
-
-            List<User> teamB = new ArrayList<>(Users);
+            List<User> teamB = new ArrayList<>(users);
             teamB.removeAll(teamA);
-            if (!isValidTeam(teamB)) continue;
+
+            // 둘 다 유효한 팀인지 확인
+            if (!isValidTeam(teamA) || !isValidTeam(teamB)) continue;
 
             double scoreA = getTeamScore(teamA);
             double scoreB = getTeamScore(teamB);
             double diff = Math.abs(scoreA - scoreB);
+            double variance = getTeamVariance(teamA) + getTeamVariance(teamB);
+            int uniqueRoles = countUniqueRoles(teamA) + countUniqueRoles(teamB);
 
-            if (diff < minDiff) {
-                minDiff = diff;
+            // 최종 평가 점수: diff + 분산 - 라인 다양성 보너스
+            double totalPenalty = diff + 0.5 * variance - 0.2 * uniqueRoles;
+
+            if (totalPenalty < minPenalty) {
+                minPenalty = totalPenalty;
                 bestTeamA = new ArrayList<>(teamA);
                 bestTeamB = new ArrayList<>(teamB);
             }
@@ -37,8 +42,7 @@ public class BalanceMaker {
             return "❌ 라인 중복 없이 팀을 구성할 수 없습니다. 각 라인당 2명씩 등록되어야 합니다.";
         }
 
-        StringBuilder result = new StringBuilder("🎯 **밸런스 결과** (점수 차이: " + String.format("%.2f", minDiff) + ")\n\n");
-
+        StringBuilder result = new StringBuilder("🎯 **개선된 밸런스 결과** (점수 차이 기준 + 내부 분산 고려)\n\n");
         result.append("🟥 **Team A**\n");
         for (User p : bestTeamA) {
             result.append(p.name).append(" (").append(p.role).append(", ").append(p.score).append("점)\n");
@@ -52,6 +56,20 @@ public class BalanceMaker {
         return result.toString();
     }
 
+    // 기존 함수들 (수정 없이 그대로 사용)
+    private double getTeamScore(List<User> team) {
+        return team.stream().mapToDouble(p -> p.score).sum();
+    }
+
+    private double getTeamVariance(List<User> team) {
+        double avg = getTeamScore(team) / team.size();
+        return team.stream().mapToDouble(p -> Math.pow(p.score - avg, 2)).average().orElse(Double.MAX_VALUE);
+    }
+
+    private int countUniqueRoles(List<User> team) {
+        return (int) team.stream().map(u -> u.role.toLowerCase()).distinct().count();
+    }
+
     private boolean isValidTeam(List<User> team) {
         Set<String> roles = new HashSet<>();
         for (User u : team) {
@@ -59,16 +77,12 @@ public class BalanceMaker {
             if (roles.contains(role)) return false;
             roles.add(role);
         }
-        return roles.size() == 5;
+        return true;
     }
 
-    private double getTeamScore(List<User> team) {
-        return team.stream().mapToDouble(p -> p.score).sum();
-    }
-
-    private List<List<User>> generateCombinations(List<User> Users, int k) {
+    private List<List<User>> generateCombinations(List<User> users, int k) {
         List<List<User>> result = new ArrayList<>();
-        generateHelper(Users, new ArrayList<>(), 0, k, result);
+        generateHelper(users, new ArrayList<>(), 0, k, result);
         return result;
     }
 
