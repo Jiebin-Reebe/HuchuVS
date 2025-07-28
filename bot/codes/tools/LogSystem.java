@@ -1,4 +1,4 @@
-package system;
+package tools;
 
 public class LogSystem {
     // 0.7.0 추가 예정

@@ -1,12 +1,11 @@
 package commands;
 
 import managers.MessageStatsManager;
-import system.XpSystem;
-
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import tools.XpSystem;
 
 import java.awt.*;
 import java.sql.SQLException;
