@@ -44,6 +44,7 @@ public class DiscordBot {
                         new ChattingReaction(),
                         new SlashCommandReaction(),
                         new BalanceCommand(queue),
+                        new LogCommand(),
 
                         new RoleButtonListener(),
                         new RoleSelectMenuListener(),
